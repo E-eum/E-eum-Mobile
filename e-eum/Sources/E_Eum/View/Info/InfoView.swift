@@ -27,14 +27,12 @@ struct InfoView: View {
                     
                     if let userInfo = authService.userInfo {
                         Text("Hi \(userInfo.nickname)!")
-                            .font(.largeTitle)
-                            .bold()
+                            .font(.system(size: 30, weight: .bold))
                             .foregroundStyle(Color.white)
                             .padding(16)
                     } else {
                         Text("반가워요:)")
-                            .font(.largeTitle)
-                            .bold()
+                            .font(.system(size: 30, weight: .bold))
                             .foregroundStyle(Color.white)
                             .padding(16)
                     }
@@ -55,8 +53,7 @@ struct InfoView: View {
                                         .frame(width: 120)
                                     
                                     Text("띵동을\n알고싶어?")
-                                        .font(.title2)
-                                        .bold()
+                                        .font(.system(size: 20, weight: .bold))
                                         .multilineTextAlignment(.leading)
                                         .foregroundStyle(Color.black)
                                 }
@@ -74,8 +71,7 @@ struct InfoView: View {
                                         .frame(width: 100)
                                     
                                     Text("띵동과\n함께하고 싶다면?")
-                                        .font(.title2)
-                                        .bold()
+                                        .font(.system(size: 20, weight: .bold))
                                         .multilineTextAlignment(.leading)
                                         .foregroundStyle(Color.black)
                                 }
@@ -98,8 +94,7 @@ struct InfoView: View {
                                     Spacer()
                                     
                                     Text("퀴어들의\n장소를 추천해줘!")
-                                        .font(.title2)
-                                        .bold()
+                                        .font(.system(size: 20, weight: .bold))
                                         .multilineTextAlignment(.leading)
                                         .foregroundStyle(Color.black)
                                     
@@ -112,7 +107,11 @@ struct InfoView: View {
                             WebpageView(url: URL(string: WebpageLink.techForImpact.rawValue)!)
                         } label: {
                             cardButton {
-                                VStack(alignment: .center, spacing: 24) {
+                                VStack(alignment: .center, spacing: 18) {
+                                    Text("Our Partners")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundStyle(Color.black)
+                                    
                                     Image("ddingdong_icon_2", bundle: .module)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
