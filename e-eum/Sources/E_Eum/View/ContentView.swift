@@ -12,55 +12,65 @@ struct ContentView: View {
     @AppStorage("qrAuthorized") var qrAuthorized: Bool = false
     
     @State private var authService = AuthService()
+    @State private var showSplashView: Bool = true
     @State private var showOnboarding: Bool = false
 
     var body: some View {
-        TabView(selection: $tab) {
-            InfoView()
-                .tabItem {
-                    Label("띵동", systemImage: "house")
+        if showSplashView {
+            SplashView()
+                .onAppear {
+                    if let email = UserDefaults.standard.string(forKey: "email"), let password = UserDefaults.standard.string(forKey: "password") {
+                        autoLogin(email: email, password: password)
+                    }
+                    authService.qrAuthorized = qrAuthorized
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                        showSplashView = false
+                    })
                 }
-                .tag(ContentTab.info)
-            
-            placeMapViewTabItem
-                .tabItem {
-                    #if SKIP
-                    Label("장소", systemImage: "Icons.Outlined.Place")
-                    #else
-                    Label("장소", systemImage: "mappin.and.ellipse")
-                    #endif
-                }
-                .tag(ContentTab.placeMap)
-            
-            placeListViewTabItem
-                .tabItem {
-                    Label("목록", systemImage: "list.bullet")
-                }
-                .tag(ContentTab.placeList)
-            
-            UserView(qrAuthorized: $qrAuthorized)
-                .tabItem {
-                    Label("유저", systemImage: "person.crop.circle")
-                }
-                .tag(ContentTab.user)
-        }
-        .environment(authService)
-        .preferredColorScheme(.light)
-        .onAppear {
-            if !UserDefaults.standard.bool(forKey: "launchedBefore") {
-                showOnboarding = true
+        } else {
+            TabView(selection: $tab) {
+                InfoView()
+                    .tabItem {
+                        Label("띵동", systemImage: "house")
+                    }
+                    .tag(ContentTab.info)
+                
+                placeMapViewTabItem
+                    .tabItem {
+                        #if SKIP
+                        Label("장소", systemImage: "Icons.Outlined.Place")
+                        #else
+                        Label("장소", systemImage: "mappin.and.ellipse")
+                        #endif
+                    }
+                    .tag(ContentTab.placeMap)
+                
+                placeListViewTabItem
+                    .tabItem {
+                        Label("목록", systemImage: "list.bullet")
+                    }
+                    .tag(ContentTab.placeList)
+                
+                UserView(qrAuthorized: $qrAuthorized)
+                    .tabItem {
+                        Label("유저", systemImage: "person.crop.circle")
+                    }
+                    .tag(ContentTab.user)
             }
-            if let email = UserDefaults.standard.string(forKey: "email"), let password = UserDefaults.standard.string(forKey: "password") {
-                autoLogin(email: email, password: password)
+            .environment(authService)
+            .preferredColorScheme(.light)
+            .onAppear {
+                if !UserDefaults.standard.bool(forKey: "launchedBefore") {
+                    showOnboarding = true
+                }
             }
-            authService.qrAuthorized = qrAuthorized
+            .fullScreenCover(isPresented: $showOnboarding) {
+                OnboardingView(withHeader: false)
+            }
+            #if os(iOS)
+            .sensoryFeedback(.selection, trigger: tab)
+            #endif
         }
-        .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView(withHeader: false)
-        }
-        #if os(iOS)
-        .sensoryFeedback(.selection, trigger: tab)
-        #endif
     }
 }
 
